@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzLearn.Core\AzLearn.Core.csproj" />
-    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

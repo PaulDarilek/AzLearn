@@ -14,11 +14,12 @@ namespace AzLearn.Core.Tests
     {
         private const string LogFolder = @"..\..\..\Logs";
         private const string _TestFiles = @"..\..\..\_TestFiles\";
+        protected string[] GetFiles(string filePattern) => Directory.GetFiles(_TestFiles, filePattern);
 
         [Fact]
-        async Task VisionOcrV3_GetImageOCR_Handwritten()
+        public async Task VisionOcrV3_GetImageOCR_Handwritten()
         {
-            var files = Directory.GetFiles(_TestFiles, "handwritten-*.*");
+            var files = GetFiles("handwritten-*.*");
 
             foreach (var file in files)
             {
@@ -49,9 +50,9 @@ namespace AzLearn.Core.Tests
         }
 
         [Fact]
-        async Task VisionOcrV3_GetImageOCR_Printed()
+        public async Task VisionOcrV3_GetImageOCR_Printed()
         {
-            var files = Directory.GetFiles(_TestFiles, "printed-*.*");
+            var files = GetFiles("printed-*.*");
 
             foreach (var file in files)
             {
@@ -90,9 +91,9 @@ namespace AzLearn.Core.Tests
         }
 
         [Fact]
-        async Task VisionOcrV2_GetImageOCR()
+        public async Task VisionOcrV2_GetImageOCR()
         {
-            var files = Directory.GetFiles(_TestFiles, "printed-*.*");
+            var files = GetFiles("printed-*.*");
 
             foreach (var file in files)
             {
@@ -133,26 +134,27 @@ namespace AzLearn.Core.Tests
         }
 
 
-        private VisionOcrV3 CreateV3()
+        protected VisionOcrV3 CreateV3()
         {
             var settings = ConfigurationService.GetConfigurationSettings<VisionSettings>();
             var service = new VisionOcrV3(settings);
             return service;
         }
 
-        private VisionOcrV2 CreateV2()
+        protected VisionOcrV2 CreateV2()
         {
             var settings = ConfigurationService.GetConfigurationSettings<VisionSettings>();
             var service = new VisionOcrV2(settings);
             return service;
         }
 
-        private void LogResults(string text, string fileName, string extension = ".txt", [CallerMemberName] string methodName = null)
+
+        protected string GetLogFileName(string fileName, string extension = ".txt", [CallerMemberName] string methodName = null)
+            => Path.Combine(LogFolder, $"{methodName}_{Path.GetFileNameWithoutExtension(fileName)}{extension}");
+
+        protected void LogResults(string text, string fileName, string extension = ".txt", [CallerMemberName] string methodName = null)
         {
-            fileName = Path.Combine(
-                LogFolder, 
-                $"{methodName}_{Path.GetFileNameWithoutExtension(fileName)}{extension}");
-            
+            fileName = GetLogFileName(fileName, extension, methodName);
             File.WriteAllText(fileName, text);
         }
     }
